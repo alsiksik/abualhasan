@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أسواق أبو الحسن</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f8f3;--card:#fff;--ink:#17261d;--mute:#5d6f63;--green:#1f6b45;--green-d:#14492f;--yel:#f4c430;--line:#dfe6dc;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a14;--card:#18261d;--ink:#eef4ee;--mute:#9db1a3;--green:#3fae78;--green-d:#2d8a5c;--line:#2a3d31;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101a14;--card:#18261d;--ink:#eef4ee;--mute:#9db1a3;--green:#3fae78;--green-d:#2d8a5c;--line:#2a3d31;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo',Tahoma,Arial,sans-serif;line-height:1.6}
+header{position:sticky;top:0;z-index:5;background:var(--green-d);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--green-d);z-index:10}
+.brand{font-weight:800;font-size:1.25rem;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;background:var(--yel);color:#17261d;border-radius:8px;padding:0 8px}
+button{font:inherit;cursor:pointer}
+.cartbtn{background:var(--yel);color:#17261d;border:0;border-radius:999px;padding:6px 16px;font-weight:800}
+.hero{padding:22px 16px 8px;max-width:1000px;margin:auto}
+.hero h1{margin:0;font-size:1.7rem;font-weight:800}
+.hero p{margin:4px 0 0;color:var(--mute)}
+.tools{max-width:1000px;margin:auto;padding:8px 16px}
+input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid var(--yel);outline-offset:1px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 14px}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+.grid{max-width:1000px;margin:auto;padding:8px 16px 90px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.p{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.p .e{font-size:2.6rem;line-height:1.2}
+.p .im{width:100%;aspect-ratio:1;object-fit:contain;border-radius:10px;background:#fff}
+.p b{font-weight:600}
+.p small{color:var(--mute)}
+.p .pr{font-weight:800;color:var(--green);margin-top:auto;padding-top:6px}
+.add{margin-top:6px;background:var(--green);color:#fff;border:0;border-radius:10px;padding:6px}
+.qty{display:flex;align-items:center;justify-content:space-between;margin-top:6px;background:var(--bg);border-radius:10px;padding:2px}
+.qty button{width:34px;height:30px;border:0;border-radius:8px;background:var(--green);color:#fff;font-weight:800}
+.empty{grid-column:1/-1;color:var(--mute);text-align:center;padding:30px}
+#drawer{position:fixed;inset:0;z-index:20;display:none;background:rgba(0,0,0,.45)}
+#drawer.open{display:block}
+.sheet{position:absolute;inset:auto 0 0 0;max-height:92%;overflow:auto;background:var(--bg);border-radius:18px 18px 0 0;padding:16px;max-width:560px;margin:auto}
+.sheet h2{margin:0 0 8px;font-size:1.2rem}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem;padding:12px 0}
+label{display:block;font-weight:600;margin:8px 0 2px}
+.send{width:100%;margin-top:12px;background:#1fa855;color:#fff;border:0;border-radius:12px;padding:12px;font-weight:800;font-size:1.05rem}
+.x{float:left;background:none;border:0;color:var(--mute);font-size:1.4rem}
+.note{color:var(--mute);font-size:.9rem}
+.err{color:#c0392b;font-weight:600;min-height:1.4em}
+@media (prefers-reduced-motion:no-preference){.p .add:active,.send:active{transform:scale(.97)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><i>🛒</i> أسواق أبو الحسن</div>
+  <button class="cartbtn" id="openCart">السلة (<span id="cnt">0</span>)</button>
+</header>
+<section class="hero">
+  <h1>اطلب بقالتك من البيت</h1>
+  <p>اختر منتجاتك، أرسل الطلب على واتساب، وادفع عند الاستلام.</p>
+</section>
+<div class="tools">
+  <input id="q" type="search" placeholder="ابحث عن منتج" aria-label="ابحث عن منتج">
+  <div class="chips" id="chips"></div>
+</div>
+<main class="grid" id="grid"></main>
+
+<div id="drawer" role="dialog" aria-modal="true" aria-label="سلة المشتريات">
+  <div class="sheet">
+    <button class="x" id="closeCart" aria-label="إغلاق">×</button>
+    <h2>سلة المشتريات</h2>
+    <div id="items"></div>
+    <div class="tot"><span>المجموع</span><span id="sum">0 ₪</span></div>
+    <div id="form">
+      <label for="nm">الاسم</label><input id="nm" autocomplete="name">
+      <label for="ph">رقم الهاتف</label><input id="ph" type="tel" autocomplete="tel">
+      <label for="ad">العنوان</label><textarea id="ad" rows="2" autocomplete="street-address"></textarea>
+      <label for="nt">ملاحظات (اختياري)</label><input id="nt">
+      <p class="note">الدفع نقدًا عند الاستلام.</p>
+      <div class="err" id="err" role="alert"></div>
+      <button class="send" id="send">أرسل الطلب على واتساب</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== عدّل هنا: رقم الواتساب والمنتجات =====
+var WHATSAPP = "970597758443";
+var CUR = "₪";
+// [الاسم، القسم، السعر، الوحدة، الرمز، اسم الصورة (اختياري)]
+var PRODUCTS = [
+ ["طماطم","خضار وفواكه",4,"كغ","🍅"],["خيار","خضار وفواكه",3.5,"كغ","🥒"],["بطاطا","خضار وفواكه",3,"كغ","🥔"],["بصل","خضار وفواكه",2.5,"كغ","🧅"],
+ ["تفاح","خضار وفواكه",7,"كغ","🍎"],["موز","خضار وفواكه",6,"كغ","🍌"],["برتقال","خضار وفواكه",4,"كغ","🍊"],
+ ["حليب كامل الدسم","ألبان وبيض",6,"لتر","🥛"],["لبنة","ألبان وبيض",9,"عبوة","🧈"],["جبنة بيضاء","ألبان وبيض",18,"500 غ","🧀"],["بيض","ألبان وبيض",22,"طبق 30","🥚"],
+ ["خبز عربي","مخبوزات",5,"كيس","🫓"],["كعك","مخبوزات",3,"قطعة","🥯"],
+ ["أرز","مواد تموينية",10,"2 كغ","🍚"],["سكر","مواد تموينية",5,"كغ","🍬"],["زيت زيتون","مواد تموينية",45,"لتر","🫒"],["عدس","مواد تموينية",6,"كغ","🥣"],["معكرونة","مواد تموينية",3,"500 غ","🍝"],
+ ["عصير برتقال","مشروبات",5,"لتر","🧃"],["مياه معدنية","مشروبات",2,"1.5 لتر","💧"],["شاي","مشروبات",12,"علبة","🍵"],
+ ["صابون سائل","منظفات",12,"عبوة","🧴"],["مسحوق غسيل","منظفات",25,"3 كغ","🧺"],["مناديل ورقية","منظفات",8,"علبة","🧻"]
+].map(function(a,i){return{id:i,n:a[0],c:a[1],p:a[2],u:a[3],e:a[4],img:a[5]||""}});
+
+var cart={}, cat="الكل", $=function(i){return document.getElementById(i)};
+var cats=["الكل"].concat(PRODUCTS.map(function(p){return p.c}).filter(function(v,i,a){return a.indexOf(v)===i}));
+function fmt(n){return (Math.round(n*100)/100)+" "+CUR}
+
+function chips(){
+  $("chips").innerHTML="";
+  cats.forEach(function(c){
+    var b=document.createElement("button");b.className="chip";b.textContent=c;
+    b.setAttribute("aria-pressed",c===cat);
+    b.onclick=function(){cat=c;chips();grid()};
+    $("chips").appendChild(b);
+  });
+}
+function grid(){
+  var q=$("q").value.trim(),g=$("grid");g.innerHTML="";
+  var list=PRODUCTS.filter(function(p){return (cat==="الكل"||p.c===cat)&&(!q||p.n.indexOf(q)>-1)});
+  if(!list.length){g.innerHTML='<div class="empty">لا توجد منتجات مطابقة.</div>';return}
+  list.forEach(function(p){
+    var d=document.createElement("div");d.className="p";
+    d.innerHTML=(p.img?'<img class="im" loading="lazy" src="images/'+p.img+'" alt="'+p.n+'" onerror="this.outerHTML=\'<div class=e>'+p.e+'</div>\'">':'<div class="e" aria-hidden="true">'+p.e+'</div>')+'<b>'+p.n+'</b><small>'+p.u+'</small><div class="pr">'+fmt(p.p)+'</div><div class="ctl"></div>';
+    g.appendChild(d);ctl(d.querySelector(".ctl"),p);
+  });
+}
+function ctl(box,p){
+  var n=cart[p.id]||0;box.innerHTML="";
+  if(!n){var a=document.createElement("button");a.className="add";a.style.width="100%";a.textContent="أضف إلى السلة";a.onclick=function(){set(p.id,1)};box.appendChild(a);return}
+  var q=document.createElement("div");q.className="qty";
+  q.innerHTML='<button aria-label="زيادة">+</button><span>'+n+'</span><button aria-label="إنقاص">−</button>';
+  q.children[0].onclick=function(){set(p.id,n+1)};q.children[2].onclick=function(){set(p.id,n-1)};
+  box.appendChild(q);
+}
+function set(id,n){if(n<=0)delete cart[id];else cart[id]=n;grid();render()}
+function total(){return PRODUCTS.reduce(function(s,p){return s+(cart[p.id]||0)*p.p},0)}
+function render(){
+  var c=0;for(var k in cart)c+=cart[k];$("cnt").textContent=c;
+  var h="";PRODUCTS.forEach(function(p){var n=cart[p.id];if(n)h+='<div class="row"><span>'+p.e+' '+p.n+' × '+n+'</span><span>'+fmt(n*p.p)+'</span></div>'});
+  $("items").innerHTML=h||'<p class="note">السلة فارغة. أضف منتجات من القائمة.</p>';
+  $("sum").textContent=fmt(total());
+  $("form").style.display=c?"block":"none";
+}
+$("q").oninput=grid;
+$("openCart").onclick=function(){$("drawer").classList.add("open");render()};
+$("closeCart").onclick=function(){$("drawer").classList.remove("open")};
+$("drawer").onclick=function(e){if(e.target===this)this.classList.remove("open")};
+$("send").onclick=function(){
+  var nm=$("nm").value.trim(),ph=$("ph").value.trim(),ad=$("ad").value.trim();
+  if(!nm||!ph||!ad){$("err").textContent="اكتب الاسم ورقم الهاتف والعنوان قبل الإرسال.";return}
+  $("err").textContent="";
+  var L=["طلب جديد من متجر أسواق أبو الحسن",""];
+  PRODUCTS.forEach(function(p){var n=cart[p.id];if(n)L.push("• "+p.n+" × "+n+" = "+fmt(n*p.p))});
+  L.push("","المجموع: "+fmt(total()),"الدفع: نقدًا عند الاستلام","","الاسم: "+nm,"الهاتف: "+ph,"العنوان: "+ad);
+  var nt=$("nt").value.trim();if(nt)L.push("ملاحظات: "+nt);
+  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(L.join("\n")),"_blank");
+};
+chips();grid();render();
+</script>
+</body>
+</html>
